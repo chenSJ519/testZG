@@ -17,7 +17,7 @@ public class MySpringConfig {
     }
 
     public String getVideoInfoXML() {//abc
-        return videoInfoXML;
+        return videoInfoXML;//edf
     }
 
     public void setVideoInfoXML(String videoInfoXML) {
