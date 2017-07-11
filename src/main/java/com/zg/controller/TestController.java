@@ -52,7 +52,7 @@ import com.qq.weixin.mp.aes.WXBizMsgCrypt;
 @RequestMapping("/zg")
 public class TestController {
     @Autowired
-    private MySpringConfig mySpringConfig;
+    private MySpringConfig mySpringConfig;//
     @Autowired
     private ZgService zs;
     @Autowired
