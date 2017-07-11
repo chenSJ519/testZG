@@ -16,7 +16,7 @@ public class MySpringConfig {
         this.mediaPath = mediaPath;
     }
 
-    public String getVideoInfoXML() {
+    public String getVideoInfoXML() {//abc
         return videoInfoXML;
     }
 
