@@ -57,7 +57,7 @@ public class TestController {
     private ZgService zs;//
     @Autowired
     private ProgramMapper pm;//
-    @RequestMapping("/index")
+    @RequestMapping("/index")//
     @ResponseBody
     public String index(String signature,String timestamp,String nonce,String echostr)throws Exception
     {
