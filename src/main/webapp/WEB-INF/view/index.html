@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		
+		<!--<link rel="stylesheet" href="${base.contextPath}/static/jquery/screen.css" />-->
+		<link rel="stylesheet" type="text/css" href="${base.contextPath}/static/bootstrap/bootstrap.min.css">
+		<link rel="stylesheet" href="${base.contextPath}/static/bootstrap/bootstrap-table.min.css">
+		<link rel="stylesheet" type="text/css" href="${base.contextPath}/static/css/zTreeStyle.css"/>
+		<!--<link rel="stylesheet" href="${base.contextPath}/static/jquery/jquery.treeview.css" />-->
+		<script type="text/javascript" src="${base.contextPath}/static/jquery/jquery-2.2.0.js"></script>
+		<script src="${base.contextPath}/static/js/jquery.ztree.core.js" type="text/javascript" charset="utf-8"></script>
+		<script src="${base.contextPath}/static/js/jquery.ztree.excheck.js" type="text/javascript" charset="utf-8"></script>
+		<!--<script type="text/javascript" src="${base.contextPath}/static/jquery/jquery.js"></script>-->
+		<script type="text/javascript" src="${base.contextPath}/static/bootstrap/bootstrap.min.js"></script>
+		<!--<script type="text/javascript" src="${base.contextPath}/static/jquery/jquery.cookie.js"></script>
+		<script type="text/javascript" src="${base.contextPath}/static/jquery/jquery.treeview.js"></script>-->
+		<script src="${base.contextPath}/static/js/bootstrap-table.min.js"></script>
+		<script src="${base.contextPath}/static/js/bootstrap-table-zh-CN.js"></script>
+		<script type="text/javascript">
+	 function modaltable(taskid)
+	 {
+	 	 $('#myModal').modal({ remote: "content.html?taskid="+taskid});
+	 	 $("#myModal").on("hidden.bs.modal", function() {  
+			    $(this).removeData("bs.modal");  
+			});  
+	 }
+		var zNodes;
+		 var zTreeObj;
+	   // zTree 的参数配置，深入使用请参考 API 文档（setting 配置详解）
+	    var setting = {
+	    	check: {
+					enable: true
+				},
+				
+	   	data: {
+			simpleData: {
+				enable: true,
+				idKey: "id",
+				pIdKey: "pId",
+				rootPId: 0
+			}
+		}
+	   	};
+			$(function(){
+
+
+                //bootstarp table
+
+			    //bootstarp table
+				$.ajax({
+					type:"post",
+					url:"/zg/mulu",
+					async:true,
+					dataType:"json",
+					success:function(data){
+						zNodes=data;
+						zTreeObj = $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+					}
+				});
+				$("#scan").click(function(){
+					var fileName=new Array();
+					var nodes = zTreeObj.getCheckedNodes();
+					    for(var i=0;i<nodes.length;i++)
+					    {
+//					    	alert(nodes[i].name);
+					    	fileName[i]=nodes[i].name;
+					    }
+					
+					$.ajax({
+						type:"post",
+						url:"/zg/playurl/query",
+						data:{channel:fileName,4:33},
+						async:false,
+						dataType:"json",
+						success:function(data){
+							alert("哈哈")
+							 
+						}
+					});
+					 $("#table").bootstrapTable('refresh', {url: 'programTable'}); 
+				});
+
+			})
+			$(function () {
+                $('#table').bootstrapTable({
+                    url: 'programTable',
+                    dataType:'json',
+                    edit:true,
+                    columns: [
+                        {field:'checkbox',checkbox:true},
+                        {
+                            field: 'taskid',
+                            title: '任务id'
+                        }, {
+                            field: 'name',
+                            edit:true,
+                            title: '名字'
+                        }, {
+                            field: 'type',
+                            title: '类型'
+                        }
+                        , {
+                            field: 'xmlplan',
+                            title: 'xml扫描进度'
+                        }
+                        , {
+                            field: 'videoplan',
+                            title: '节目扫描进度'
+                        
+                        },
+                        {
+                            field: 'scantime',
+                            title: '扫描时间'
+                        
+                        },{field: 'operate',title: 'OPERATE',align:'center',formatter:function(){
+                            return '<a title="" class="select" href="javascript:void(0)"><i class="glyphicon glyphicon-search"></i></a><a title="Remove" class="remove" href="javascript:void(0)"><i class="glyphicon glyphicon-remove"></i></a>';
+                        }}
+                    ],
+                    striped:true,//隔行变色
+                    pagination:true,//开启分页
+                    //  sidePagination: 'server',//在哪分页
+                    pageList:[2,5,10,20],
+                    search:true,//
+                    showColumns:true,
+                    showToggle:true,
+                    showRefresh:true,
+                    showPaginationSwitch:true,
+                    showExport:true,
+                    detailView:true,
+                    detailFormatter:function(index,row){
+                        return"asdhg";
+                    },
+                    toolbar:'#toolbar',
+                });
+            })
+		</script>
+
+<SCRIPT LANGUAGE="JavaScript">
+  
+   // zTree 的数据属性，深入使用请参考 API 文档（zTreeNode 节点数据详解）
+// var zNodes = [
+// {name:"${folder}", open:true, children:[
+//    {name:"video",isParent:true},  {name:"image",isParent:true},{name:"metadata.xml"}]},
+//
+// ];
+   $(document).ready(function(){
+     
+   });
+  </SCRIPT>
+	</head>
+
+	<body>
+	
+<div class="container">
+		<div class="row">
+			<div class="col-md-2">
+				<button class="btn btn-default" type="submit" id="scan">扫描</button>
+	
+				<h4>待扫描的文件</h4>
+				<!--<ul id="browser" class="filetree">
+					<#list mulu as folder>
+						<li><span class="folder">${folder}</span>
+							<ul>
+								<li><span class="folder">image</span></li>
+								<li><span class="folder">video</span></li>
+								<li><span class="file">metadata.xml</span></li>
+							</ul>
+						</li>
+					</#list>-->
+				
+				<div>
+				   <ul id="treeDemo" class="ztree"></ul>
+				</div>
+			</div>
+			<div class="col-md-10">
+							<!--<table class="table table-bordered">
+			  <caption>边框表格布局</caption>
+			  <thead>
+			    <tr>
+			      <th>任务id</th>
+			      <th>名称</th>
+			      <th>类型</th>
+			      <th>xml进度</th>
+			      <th>电影扫描进度</th>
+					<th>电影扫描时间</th>
+			    </tr>
+			  </thead>
+			  <tbody>
+			  	<#list listAllProgram as program>
+			  		 <tr>
+				      <td>${program["taskid"]}</td>
+				      <th><a href="javascript:;" onclick="modaltable('${program["taskid"]}')">${program["name"]}</a></th>
+				      <th>${program["type"]}</th>
+				      <th>${program["xmlplan"]}</th>
+				      <th>${program["videoplan"]}</th>
+						 <th>${program["scantime"]}</th>
+				    </tr>
+			  	</#list>
+			
+			
+			  </tbody>
+			</table>-->
+			<table id="table" ></table>
+					<div class="modal fade"  id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+						<div class="modal-dialog" role="document" style="width:900px;">
+							<div class="modal-content">
+			
+							</div>
+						</div>
+					</div>
+			</div>	
+			</div>
+		</div>
+		
+		
+		
+	
+	
+	</body>
+
+</html>

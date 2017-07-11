@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.lanqiao.o2oclass.mapper.AdminMapper">
+	<select id="selectAll" resultType="hashmap">
+		select * from teacher
+	</select>
+	<select id="selectPage" parameterType="hashmap" resultType="org.lanqiao.o2oclass.domain.Teacher">
+		<![CDATA[
+			select id,name,pwd,email,job,resume,joinDate,imageUrl,telphone from teacher limit #{min},#{max}
+		]]>	
+			
+	</select>
+	<select id="selectName" parameterType="String" resultType="hashmap">
+		<![CDATA[
+			select * from teacher where name=#{name}
+		]]>
+			
+	</select>
+	<insert id="insertTeacher" parameterType="hashmap">
+		<![CDATA[
+         insert into teacher(id,name,pwd,email,job,joinDate,imageUrl,telphone) values(#{id},#{name},#{pwd},#{email},#{job},#{joinDate},#{imageUrl},#{telphone})
+		]]>
+	</insert>
+	<delete id="deleteTeacher" >
+		delete from teacher where id in
+		<foreach collection="array" item="item" index="index" open="("  separator=","   close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+
+	<select id="selectAdminPage" parameterType="hashmap" resultType="org.lanqiao.o2oclass.domain.Manager">
+		<![CDATA[
+			select id,name,email from admin limit #{min},#{max}
+		]]>	
+			
+	</select>
+	<select id="selectAdmin" resultType="hashmap">
+		select * from admin
+	</select>
+	<update id="lock" >
+		update teacher set status=false where id in
+		<foreach collection="array" item="item" index="index" open="("  separator=","   close=")">
+			#{item}
+		</foreach>
+	</update>
+	
+	<update id="jielock" >
+		update teacher set status=true where id in
+		<foreach collection="array" item="item" index="index" open="("  separator=","   close=")">
+			#{item}
+		</foreach>
+	</update>
+	
+	
+	
+	
+	
+	
+	<insert id="authorize" parameterType="hashmap">
+		insert into admin (id,name,pwd,email) values (#{id},#{name},#{pwd},#{email}) 
+	</insert>
+	
+	<select id="selectTeacher" resultType="hashmap">
+		select  id,name,pwd,email from teacher  where id in
+		<foreach collection="array" item="item" index="index" open="("  separator=","   close=")">
+			#{item}
+		</foreach>
+	</select>
+	<select id="getId" resultType="org.lanqiao.o2oclass.domain.Teacher" parameterType="string">
+		select * from teacher where id=#{id}
+	</select>
+	<select id="getName" resultType="org.lanqiao.o2oclass.domain.Teacher" parameterType="string">
+		select * from teacher where name=#{name}
+	</select>
+	<select id="getEmail" resultType="org.lanqiao.o2oclass.domain.Teacher" parameterType="string">
+		select * from teacher where email=#{email}
+	</select>
+	<select id="getTelphone" resultType="org.lanqiao.o2oclass.domain.Teacher" parameterType="string">
+		select * from teacher where Telphone=#{Telphone}
+	</select>
+</mapper>

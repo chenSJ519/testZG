@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans-3.2.xsd 
+						http://www.springframework.org/schema/mvc 
+						http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd 
+						http://www.springframework.org/schema/context 
+						http://www.springframework.org/schema/context/spring-context-3.2.xsd ">	
+						
+	<!-- 配置包扫描 -->
+	<context:component-scan base-package="com.zg.controller"/>
+	<!-- 处理静态资源 -->
+	<mvc:resources location="/static/" mapping="/static/**"/>
+	<!--<mvc:resources location="/upload/" mapping="/upload/**"/>-->
+	<!-- 开启默认的注解支持 -->
+	<mvc:annotation-driven/>
+	<!-- 配置freeMaker视图解析器 -->
+	<bean id="freeMarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+		<property name="templateLoaderPath" value="/WEB-INF/view/"></property>
+		<property name="freemarkerSettings">
+			<props>  
+		        <prop key="template_update_delay">0</prop>  
+		        <prop key="default_encoding">utf-8</prop>  
+		        <prop key="number_format">0.##</prop>  
+		        <prop key="datetime_format">yyyy-MM-dd HH:mm:ss</prop>  
+		        <prop key="classic_compatible">true</prop>
+        	</props>  
+		</property>
+	</bean>
+	<bean id="freemarkerViewResolve" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+		<property name="suffix" value=".html"></property>
+		<property name="viewClass" value="org.springframework.web.servlet.view.freemarker.FreeMarkerView"></property>
+		<property name="contentType"  value="text/html;charset=utf-8"></property>
+		<property name="requestContextAttribute" value="base"></property>
+	</bean>
+	<!-- 文件的上传配置 -->
+	<bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver" id="multipartResolver">
+
+		<property value="utf-8" name="defaultEncoding"/>
+		<property value="10485760000" name="maxUploadSize"/>
+		<property value="40960" name="maxInMemorySize"/>
+
+	</bean>
+	<!-- springmvc声明式异常处理 -->
+	<!--<bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">-->
+		<!--<property name="exceptionMappings">-->
+			<!--<props>-->
+				<!--<prop key="java.lang.Exception">error/error</prop>-->
+				<!--<prop key="java.lang.Throwable">error/err</prop>-->
+			<!--</props>-->
+		<!--</property>-->
+		<!--<property name="statusCodes">-->
+			<!--<props>-->
+				<!--<prop key="error/error">500</prop>-->
+				<!--<prop key="error/404">404</prop>-->
+			<!--</props>-->
+		<!--</property>-->
+		<!--&lt;!&ndash; 设置日志输出级别，不定义则默认不输出警告等错误日志信息 &ndash;&gt;      -->
+        <!--<property name="warnLogCategory" value="WARN"></property>       -->
+       <!--&lt;!&ndash; 默认错误页面，当找不到上面mappings中指定的异常对应视图时，使用本默认配置     &ndash;&gt;      -->
+        <!--<property name="defaultErrorView" value="error/error"></property>       -->
+        <!--&lt;!&ndash; 默认HTTP状态码        &ndash;&gt; -->
+        <!--<property name="defaultStatusCode" value="500"></property>  -->
+	<!--</bean>-->
+	<!--<mvc:interceptors>-->
+		<!--<mvc:interceptor>-->
+			<!--<mvc:mapping path="/teacherManager/*"/>-->
+			<!--<bean class="org.lanqiao.o2oclass.interceptor.TeacherManagerInterceptor"></bean>-->
+		<!--</mvc:interceptor>-->
+		<!--<mvc:interceptor>-->
+			<!--<mvc:mapping path="/tieba/*"/>-->
+			<!--<bean class="org.lanqiao.o2oclass.interceptor.TiebaInterceptor"></bean>-->
+		<!--</mvc:interceptor>-->
+		<!--<mvc:interceptor>-->
+			<!--<mvc:mapping path="/resource/download"/>-->
+			<!--<mvc:mapping path="/resource/play"/>-->
+			<!--<mvc:mapping path="/resource/readOnline"/>-->
+			<!--<mvc:mapping path="/student/setting"/>-->
+			<!--<bean class="org.lanqiao.o2oclass.interceptor.StudentInterceptor"></bean>-->
+		<!--</mvc:interceptor>-->
+		<!--<mvc:interceptor>-->
+			<!--<mvc:mapping path="/managers/*"/>-->
+			<!--<bean class="org.lanqiao.o2oclass.interceptor.ManagerInterceptor"></bean>-->
+		<!--</mvc:interceptor>-->
+		<!---->
+		<!---->
+	<!--</mvc:interceptors>-->
+	
+	
+	
+	
+	<!--<context:component-scan base-package="org.lanqiao.o2oclass.interceptor"></context:component-scan>-->
+</beans>

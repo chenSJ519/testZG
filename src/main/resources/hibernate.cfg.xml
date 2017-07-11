@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD//EN"
+    "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+  <session-factory>
+    <property name="connection.url">jdbc:mysql://127.0.0.1:3306/ams?autoReconnect=true&amp;characterEncoding=UTF-8</property>
+    <property name="connection.username">root</property>
+    <property name="connection.password">123</property>
+    <property name="connection.driver_class">
+      com.mysql.jdbc.Driver
+    </property>
+    <property name="dialect">
+      org.hibernate.dialect.MySQLDialect
+    </property>
+    <!-- 指定数据库连接池最大连接数 -->
+    <property name="hibernate.c3p0.max_size">20</property>
+    <!-- 指定数据库连接池最小连接数 -->
+    <property name="hibernate.c3p0.min_size">1</property>
+    <!-- 指定数据库连接池的连接超时时长 -->
+    <property name="hibernate.c3p0.timeout">5000</property>
+    <!-- 指定数据库连接池最大缓存多少个statement对象 -->
+    <property name="hibernate.c3p0.max_statements">100</property>
+    <!-- 指定数据库连接池中多长时间遍历并消耗已超时的连接对象 -->
+    <property name="hibernate.c3p0.idle_test_period">3000</property>
+    <!-- 指定数据库连接池连接用完时，一次创建多少个新的连接数 -->
+    <property name="hibernate.c3p0.acquire_increment">2</property>
+    <!-- 指定数据库连接池是否每次都验证连接是否有效 -->
+    <property name="hibernate.c3p0.validate">true</property>
+    <!-- 根据model类生成表,即使表结构改变了,表中的行仍然存在,不会删除以前的行 -->
+    <property name="hbm2ddl.auto">none</property>
+    <!-- hibernate生成的sql语句相关配置 -->
+    <property name="hibernate.show_sql">false</property>
+    <property name="hibernate.format_sql">true</property>
+    <property name="hibernate.use_sql_comments">true</property>
+    <property name="myeclipse.connection.profile">mysql</property>
+  </session-factory>
+</hibernate-configuration>

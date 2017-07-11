@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.lanqiao.o2oclass.mapper.StudentMapper">
+	<!-- 学生登录，查询是否存在 -->
+	<select id="getStudent" resultType="hashmap" parameterType="string">
+		select * from student where nickName = #{nickName}
+	</select>
+	<!-- 学生注册，查询是否已存在 -->
+	<select id="getRegName" resultType="hashmap" parameterType="string">
+		select *from student where nickName = #{nickName}
+	</select>
+	<!-- 选择班级和老师 -->
+	<select id="getRegClass" resultType="hashmap">
+		select c.*  from teacher t,classes c where c.teacherId=t.id
+	</select>
+	<!-- 根据班级名获得班级id -->
+	<select id="getClassId" resultType="string">
+		select id from classes where name=#{className}
+	</select>
+	<!-- 注册学生信息 -->
+	<insert id="addRegStudent" parameterType="hashmap">
+		insert into student values(#{id},#{name},#{pwd},#{email},#{nickName},
+				 #{regDate},#{telphone},#{classId},#{sex},#{imageUrl},#{signature},#{status})
+	</insert>
+	<!-- 把邮箱验证过了的状态改为true -->
+	<update id="updateEmailStatus">
+		update student set status=1 where id=#{id}
+	</update>
+	<!-- 验证注册邮箱是否已存在 -->
+	<select id="getRegEmail" resultType="hashmap">
+		select *from student where email=#{email}
+	</select>
+	<!-- 重置密码 -->
+	<update id="changePwd" parameterType="hashmap">
+		update student set pwd=#{pwd} where nickName = #{nickName}
+	</update>
+	<!-- 以下是个人中心的sql -->
+	<!-- 修改基本信息（先得到） -->
+	<select id="getStuClass" resultType="hashmap">
+		select *from classes where id = #{classId}
+	</select>
+	<update id="updateBaseInfo" parameterType="hashmap">
+		update student 
+			 <set>
+		      <if test="name!= null">name=#{name},</if>
+		      <if test="telphone != null">telphone=#{telphone},</if>
+		      <if test="sex!= null">sex=#{sex},</if>
+		      <if test="signature!= null">signature=#{signature}</if>
+		    </set>
+		    where nickName=#{nickName}
+	</update>
+	<!-- 修改头像 -->
+	<update id="updateImageUrl" parameterType="hashmap">
+		update student set imageUrl=#{imageUrl} where nickName=#{nickName}
+	</update>
+	<!-- 修改邮箱 -->
+	<update id="changeEmail">
+		update student set email=#{email} where nickName=#{nickName}
+	</update>
+	<!-- 查询学生所在班级 -->
+	<select id="getTeaByClass" resultType="hashmap">
+		select *from teacher where id = (select teacherId from classes where id=#{classId})
+	</select>
+	<!-- 请假 -->
+	<insert id="insertAbsent" parameterType="hashmap">
+		insert into absent (studentId,reason,type,startTime,endTime,status)
+			values(#{studentId},#{reason},#{type},#{startTime},#{endTime},#{status});
+	</insert>
+	<!-- 查看我的假条 -->
+	<select id="getMyAbsent" resultType="hashmap">
+		select *from absent where studentId=#{studentId}	
+	</select>
+	<!-- 上传周报 -->
+	<insert id="insertWeekNew" parameterType="hashmap">
+		insert into weeknews (title,content,submitTime,studentId)
+		 values(#{title},#{content},#{submitTime},#{studentId})
+	</insert>
+	<!-- 我的周报 -->
+	<select id="getMyWeekNews" resultType="hashmap">
+		select *from weeknews where studentId = #{id}
+	</select>
+</mapper>

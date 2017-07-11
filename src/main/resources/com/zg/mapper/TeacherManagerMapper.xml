@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.lanqiao.o2oclass.mapper.TeacherManagerMapper">
+    <resultMap id="studentMap" type="org.lanqiao.o2oclass.domain.Student">
+        <id property="id" column="id"/>
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="pwd" column="pwd"/>
+        <result property="email" column="email"/>
+        <result property="nickname" column="nickname"/>
+        <result property="regDate" column="regDate"/>
+        <result property="telphone" column="telphone"/>
+        <result property="sex" column="sex"/>
+        <result property="imageUrl" column="imageUrl"/>
+        <result property="signature" column="signature"/>
+        <association property="clazz" javaType="org.lanqiao.o2oclass.domain.Classes">
+            <result property="name" column="classesName"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="absentMap" type="org.lanqiao.o2oclass.domain.Absent">
+        <id property="id" column="id"/>
+        <result property="reason" column="reason"/>
+        <result property="startTime" column="startTime"/>
+        <result property="endTime" column="endTime"/>
+        <result property="type" column="type"/>
+        <result property="status" column="status"/>
+        <association property="student" javaType="org.lanqiao.o2oclass.domain.Student">
+            <id property="id" column="sid"/>
+            <result property="name" column="classesName"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="weeknewsMap" type="org.lanqiao.o2oclass.domain.WeekNews">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="submitTime" column="submitTime"/>
+        <association property="student" javaType="org.lanqiao.o2oclass.domain.Student">
+            <result property="name" column="name"/>
+            <association property="clazz" javaType="org.lanqiao.o2oclass.domain.Classes">
+                <result property="name" column="cname"/>
+            </association>
+        </association>
+    </resultMap>
+
+
+    <resultMap id="ResourcesMap" type="org.lanqiao.o2oclass.domain.Resources">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="url" column="url"/>
+        <result property="size" column="size"/>
+        <result property="uploadDate" column="uploadDate"/>
+        <association property="teacher" javaType="org.lanqiao.o2oclass.domain.Teacher">
+            <id property="id" column="teacherId"/>
+        </association>
+        <association property="category" javaType="org.lanqiao.o2oclass.domain.Category">
+            <id property="id" column="categoryId"/>
+        </association>
+    </resultMap>
+
+    <select id="SelectTeacherByBameAndPass" parameterType="org.lanqiao.o2oclass.domain.Teacher" resultType="org.lanqiao.o2oclass.domain.Teacher">
+
+       SELECT * FROM teacher WHERE NAME=#{name} AND pwd=#{pwd}
+
+    </select>
+    <select id="getAllStudent" resultMap="studentMap">
+         SELECT student.*,classes.name AS classesName FROM student, classes  WHERE student.classId=classes.id
+    </select>
+    <delete id="deleteStudentById">
+        delete  from  student where id in
+        <foreach item="item" index="index" collection="list"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+    <select id="SelectAllAbsent" resultMap="absentMap">
+      SELECT absent.*,student.name classesName,student.id sid FROM absent,student WHERE absent.studentId=student.id
+    </select>
+    <select id="selectStudentById" resultMap="studentMap">
+         SELECT student.*,classes.name AS classesName FROM student, classes  WHERE student.classId=classes.id and student.id=#{id}
+    </select>
+    <update id="updateAbsentStatus" parameterType="org.lanqiao.o2oclass.domain.Absent">
+        update absent set status=#{status} where id=#{id}
+    </update>
+    <select id="getAllWeekNews" resultMap="weeknewsMap">
+       SELECT w.*,s.name,c.name cname FROM weeknews w,student s,classes c WHERE w.studentId=s.id AND s.classId=c.id AND c.teacherId=#{teacherId}
+    </select>
+    <select id="getWeekNewsById" resultType="org.lanqiao.o2oclass.domain.WeekNews">
+        select * from weeknews where id=#{id}
+    </select>
+    <select id="getAllClassesByTeacherId" resultType="org.lanqiao.o2oclass.domain.Classes">
+        select c.* from classes c,teacher t where c.teacherId=t.id and c.teacherId=#{teacherID}
+    </select>
+    <insert id="insertClasses">
+        insert into classes(name,description,startTime,teacherId) values(#{name},#{description},#{startTime},#{teacherId})
+    </insert>
+    <select id="getClassesById" resultType="org.lanqiao.o2oclass.domain.Classes">
+        select * from classes where id=#{id}
+    </select>
+    <update id="updateClasses" parameterType="org.lanqiao.o2oclass.domain.Classes">
+        update classes
+        <set>
+            <if test="name != null">name=#{name},</if>
+            <if test="description != null">description=#{description},</if>
+            <if test="startTime != null">startTime=#{startTime},</if>
+            <if test="endTime != null">endTime=#{endTime}</if>
+        </set>
+        where id=#{id}
+    </update>
+    <select id="selectNotice" resultType="org.lanqiao.o2oclass.domain.Notice">
+        SELECT * FROM notice
+        <where>
+            <if test="id != null">
+                id = #{id}
+            </if>
+            <if test="publishDate != null">
+                AND publishDate=#{publishDate}
+            </if>
+            <if test="title != null">
+                AND title=#{title}
+            </if>
+            <if test="content != null">
+                AND content=#{content}
+            </if>
+            <if test="teacher != null and teacher.id != null">
+                AND teacherId = #{teacher.id}
+            </if>
+        </where>
+    </select>
+    <delete id="deleteNoticeByIds">
+        delete  from  notice where id in
+        <foreach item="item" index="index" collection="array"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <sql id="noticeKey">
+        <!-- 去掉最后一个, -->
+        <trim suffixOverrides=",">
+            <if test="id!=null">
+                id,
+            </if>
+            <if test="publishDate!=null">
+                publishDate,
+            </if>
+            <if test="title!=null">
+                title,
+            </if>
+            <if test="content!=null">
+                content,
+            </if>
+            <if test="teacher!=null and teacher.id!=null">
+                teacherId,
+            </if>
+        </trim>
+    </sql>
+
+
+    <!-- sql片段对应?,id属性值任意 -->
+    <sql id="noticeValue">
+        <!-- 去掉最后一个, -->
+        <trim suffixOverrides=",">
+            <if test="id!=null">
+                #{id},
+            </if>
+            <if test="publishDate!=null">
+               #{publishDate} ,
+            </if>
+            <if test="title!=null">
+                #{title} ,
+            </if>
+            <if test="content!=null">
+                #{content},
+            </if>
+            <if test="teacher!=null and teacher.id!=null">
+                #{teacher.id},
+            </if>
+        </trim>
+    </sql>
+    <insert id="insertNotice" parameterType="org.lanqiao.o2oclass.domain.Notice">
+        insert into notice(<include refid="noticeKey"/>) values(<include refid="noticeValue"/>)
+    </insert>
+    <select id="selectResource" parameterType="org.lanqiao.o2oclass.domain.Resources" resultMap="ResourcesMap">
+        SELECT * FROM resource
+        <where>
+            <if test="id != null">
+                id = #{id}
+            </if>
+            <if test="title != null">
+                AND title=#{title}
+            </if>
+            <if test="description != null">
+                AND description=#{description}
+            </if>
+            <if test="url != null">
+                AND url=#{url}
+            </if>
+            <if test="size != null">
+                AND size=#{size}
+            </if>
+            <if test="uploadDate != null">
+                AND uploadDate=#{uploadDate}
+            </if>
+            <if test="teacher != null and teacher.id != null">
+                AND teacherId = #{teacher.id}
+            </if>
+            <if test="category != null and category.id != null">
+                AND category = #{category.id}
+            </if>
+        </where>
+    </select>
+    <delete id="deleteResourceByIds">
+        delete  from  resource where id in
+        <foreach item="item" index="index" collection="array"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <sql id="resourceKey">
+        <!-- 去掉最后一个, -->
+        <trim suffixOverrides=",">
+            <if test="id!=null">
+            id,
+        </if>
+            <if test="title!=null">
+                title,
+            </if>
+            <if test="description!=null">
+                description,
+            </if>
+            <if test="url!=null">
+                url,
+            </if>
+            <if test="size!=null">
+                size,
+            </if>
+            <if test="uploadDate!=null">
+                uploadDate,
+            </if>
+            <if test="teacher!=null and teacher.id!=null">
+                teacherId,
+            </if>
+            <if test="category!=null and category.id!=null">
+                categoryId,
+            </if>
+        </trim>
+    </sql>
+
+
+    <!-- sql片段对应?,id属性值任意 -->
+    <sql id="resourceValue">
+        <!-- 去掉最后一个, -->
+        <trim suffixOverrides=",">
+            <if test="id!=null">
+                #{id},
+            </if>
+            <if test="title!=null">
+                #{title},
+            </if>
+            <if test="description!=null">
+                #{description},
+            </if>
+            <if test="url!=null">
+                #{url},
+            </if>
+            <if test="size!=null">
+                #{size},
+            </if>
+            <if test="uploadDate!=null">
+                #{uploadDate},
+            </if>
+            <if test="teacher!=null and teacher.id!=null">
+                #{teacher.id},
+            </if>
+            <if test="category!=null and category.id!=null">
+                #{category.id},
+            </if>
+        </trim>
+    </sql>
+    <insert id="insertResourceByIds" parameterType="org.lanqiao.o2oclass.domain.Resources">
+        insert into resource(<include refid="resourceKey"/>) values(<include refid="resourceValue"/>)
+    </insert>
+    <select id="getClassByTeaId" resultType="Map">
+        SELECT c.id,c.name  FROM classes c WHERE c.teacherId=#{teacherId}
+    </select>
+    <select id="getCountByClassId" resultType="Map">
+        SELECT COUNT(*) num FROM absent a,student s,classes c WHERE a.studentId=s.id AND s.classId=c.id AND c.teacherId= #{1} AND c.id=#{0}
+    </select>
+</mapper>
+

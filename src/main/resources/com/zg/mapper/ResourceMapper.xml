@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.lanqiao.o2oclass.mapper.ResourceMapper">
+	<resultMap type="org.lanqiao.o2oclass.domain.Resources" id="resourceMapper">
+		<id property="id" column="id"/>
+		<result property="title" column="title"/>
+		<result property="description" column="description"/>
+		<result property="url" column="url"/>
+		<result property="size" column="size"/>
+		<result property="uploadDate" column="uploadDate"/>
+		
+		<association  property="teacher" javaType="org.lanqiao.o2oclass.domain.Teacher">
+			<id property="id" column="id"/>
+			<result property="name" column="name"/>
+			<result property="email" column="email"/>
+			<result property="job" column="job"/>
+			<result property="resume" column="resume"/>
+			<result property="joinDate" column="joinDate"/>
+			<result property="imageUrl" column="imageUrl"/>
+			<result property="telphone" column="telphone"/>
+		</association>
+		<association property="category" javaType="org.lanqiao.o2oclass.domain.Category">
+			<id property="id" column="id"/>
+			<result property="name" column="name"/>
+		</association>
+	</resultMap>
+	<select id="queryVideo" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			r.id rid,r.title,r.description,r.url,r.size,r.uploadDate,
+			t.id tid,t.name tname, 
+			c.id cid,c.name cname
+		FROM (resource r LEFT JOIN teacher t ON r.teacherId = t.id)
+		LEFT JOIN category c ON r.categoryId = c.id 
+		WHERE r.categoryId = 1 AND DATE_SUB(CURDATE(),INTERVAL 7 DAY) <= DATE(r.uploadDate) ORDER BY r.uploadDate DESC
+	]]>
+	</select>
+	<select id="queryDoc" resultType="java.util.HashMap">
+		<![CDATA[
+		SELECT
+			r.id rid,r.title,r.description,r.url,r.size,r.uploadDate,
+			t.id tid,t.name tname, 
+			c.id cid,c.name cname
+		FROM (resource r LEFT JOIN teacher t ON r.teacherId = t.id)
+		LEFT JOIN category c ON r.categoryId = c.id 
+		WHERE r.categoryId = 2 AND DATE_SUB(CURDATE(),INTERVAL 7 DAY) <= DATE(r.uploadDate) ORDER BY r.uploadDate DESC
+	]]>
+	</select>
+	<select id="queryOther" resultType="java.util.HashMap">
+		<![CDATA[
+		SELECT
+			r.id rid,r.title,r.description,r.url,r.size,r.uploadDate,
+			t.id tid,t.name tname, 
+			c.id cid,c.name cname
+		FROM (resource r LEFT JOIN teacher t ON r.teacherId = t.id)
+		LEFT JOIN category c ON r.categoryId = c.id 
+		WHERE r.categoryId = 3 AND DATE_SUB(CURDATE(),INTERVAL 7 DAY) <= DATE(r.uploadDate) ORDER BY r.uploadDate DESC
+	]]>
+	</select>
+	
+	<select id="getResourceInfo" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT
+		r.id rid,r.title,r.description,r.url,r.size,r.uploadDate,
+		t.id tid,t.name tname
+		FROM resource r LEFT JOIN teacher t ON r.teacherId = t.id
+		<where>
+			<if test="resourceId != null">
+				r.id = #{resourceId} ;
+			</if>
+		</where>		
+	</select>
+	
+	<!-- 根据条件查询总记录数 -->
+	<select id="getResourceCount" resultType="int" parameterType="java.util.HashMap">
+		<![CDATA[
+			SELECT COUNT(r.id)
+			FROM (resource r LEFT JOIN teacher t ON r.teacherId = t.id)
+			LEFT JOIN category c ON r.categoryId = c.id
+		]]>
+		<where>
+			c.id=#{resourceId}
+			<if test="teacherId != null">
+				AND t.id=#{teacherId}
+			</if>
+			<![CDATA[
+				AND DATE_SUB(CURDATE(),INTERVAL #{days} DAY) <= DATE(r.uploadDate) 
+				ORDER BY r.uploadDate DESC 
+			]]>	
+		</where>		 
+	</select>
+	<!-- 根据条件查询分页数据 -->
+	<select id="queryMoreVideo" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		<![CDATA[
+			SELECT 
+			r.id rid,r.title,r.description,r.url,r.size,r.uploadDate,
+			t.id tid,t.name tname, 
+			c.id cid,c.name cname 
+			FROM (resource r LEFT JOIN teacher t ON r.teacherId = t.id)
+			LEFT JOIN category c ON r.categoryId = c.id 
+		]]>	
+		<where>
+			c.id = #{resourceId}
+			<if test="teacherId != null">
+				AND t.id = #{teacherId}
+			</if>		
+			<![CDATA[
+				AND DATE_SUB(CURDATE(),INTERVAL #{days} DAY) <= DATE(r.uploadDate) 
+				ORDER BY r.uploadDate DESC LIMIT #{min},#{max}
+			]]>
+		</where>
+	
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	<!--根据条件查询分页数据 -->
+	<select id="queryList" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		<![CDATA[
+			SELECT 
+			r.id rid,r.title,r.description,r.url,r.size,r.uploadDate,
+			t.id tid,t.name tname, 
+			c.id cid,c.name cname 
+			FROM (resource r LEFT JOIN teacher t ON r.teacherId = t.id)
+			LEFT JOIN category c ON r.categoryId = c.id 
+		]]>	
+		<where>
+			<![CDATA[
+				AND DATE_SUB(CURDATE(),INTERVAL #{days} DAY) <= DATE(r.uploadDate) 
+				ORDER BY r.uploadDate DESC LIMIT #{min},#{max}
+			]]>
+		</where>
+	</select>
+	
+	<!-- 根据教师查询获取去资源数量 -->
+	<select id="getTresCount" parameterType="string" resultType="int">
+		SELECT COUNT(r.id)
+			FROM (resource r LEFT JOIN teacher t ON r.teacherId = t.id)
+			LEFT JOIN category c ON r.categoryId = c.id AND t.id = #{teacherId}
+	</select>
+	<!-- 根据教师id获取资源的分页数据 -->
+	<select id="queryTResList" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT 
+		r.id rid,r.title,r.description,r.url,r.size,r.uploadDate,
+		t.id tid,t.name tname, 
+		c.id cid,c.name cname 
+		FROM (resource r LEFT JOIN teacher t ON r.teacherId = t.id)
+		LEFT JOIN category c ON r.categoryId = c.id AND t.id = #{teacherId}
+		ORDER BY r.uploadDate DESC LIMIT ${min},#{max}
+	</select>
+
+</mapper>

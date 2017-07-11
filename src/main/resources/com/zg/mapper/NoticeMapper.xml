@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.lanqiao.o2oclass.mapper.NoticeMapper">
+	<select id="showThreeDays" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+		id, title ,content,publishDate,teacherId
+		FROM notice
+		WHERE DATE_SUB(CURDATE(),INTERVAL 3 DAY) <= DATE(publishDate) 
+		ORDER BY publishDate ASC 
+	]]>
+	</select>
+</mapper>

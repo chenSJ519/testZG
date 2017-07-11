@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jgs.entity2">
+	<resultMap id="selectComMap" type="org.lanqiao.o2oclass.domain.Comments">
+		<id property="id" column="id"/>
+	  	<result property="commentText" column="commentText"/>
+	  	<result property="releaseDate" column="releaseDate"/>
+	  	<association property="emp" javaType="org.lanqiao.o2oclass.domain.Student">
+			<result property="name" column="name"/>
+		</association>
+	</resultMap>
+	
+	
+	<insert id="insertCom" >
+		<![CDATA[
+			INSERT INTO comments(id,commentText,posts_comments_id,emp_comments_id,releaseDate) VALUES(#{id},#{comment},#{pid},#{eid},#{releaseDate})
+			
+		]]>
+			
+	</insert>
+	<select id="selectCount" resultType="int">
+		<![CDATA[
+			SELECT MAX(id) FROM comments
+			
+		]]>
+	</select>
+	
+	<select id="selectCom" resultMap="selectComMap">
+		<![CDATA[
+			SELECT comments.id,commentText,emp.name,releaseDate FROM comments,student emp WHERE comments.emp_comments_id=emp.id AND comments.id=#{id}
+			
+		]]>
+	</select>
+	<delete id="deleteCom">
+		<![CDATA[
+			delete from comments where id=#{id}
+			
+		]]>
+	</delete>
+	
+	<delete id="deleteSub">
+		<![CDATA[
+			delete from subcomments where id=#{id}
+			
+		]]>
+	</delete>
+	
+	<select id="selectComSubCount" resultType="int">
+		<![CDATA[
+			select count(*) from subcomments where comments_subcomments_id=#{id}
+			
+		]]>
+	</select>
+	
+	
+</mapper>
+

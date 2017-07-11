@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zg.mapper.ProgramMapper">
+
+
+	<select id="selectAllProgram" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT taskid,name,type,xmlplan,videoplan,scantime FROM program
+	]]>
+	</select>
+	<select id="getContentByTaskid" resultType="java.util.HashMap">
+		<![CDATA[
+		SELECT * FROM content where taskidpro=#{taskid}
+	]]>
+	</select>
+	<insert id="saveOrUpdate" parameterType="com.zg.entity.Program">
+		<selectKey keyProperty="count" resultType="int" order="BEFORE">
+			select count(*) from program where taskid = #{taskid}
+		</selectKey>
+		<if test="count > 0">
+			update program
+			set name = #{name},type = #{type},xmlplan =#{xmlplan},videoplan=#{videoplan},scantime=#{scantime}
+			where taskid = #{taskid}
+		</if>
+		<if test="count==0">
+			insert into program values(#{taskid},#{name},#{type},#{xmlplan},#{videoplan},#{scantime})
+		</if>
+	</insert>
+	<insert id="saveContentList" useGeneratedKeys="true" parameterType="java.util.List">
+
+		insert into content (taskid,plan,name,taskidpro,url)
+		values
+		<foreach collection="list" item="item"  index="index" separator="," >
+			(#{item.taskid},#{item.plan},#{item.name},#{item.program.taskid},#{item.url})
+		</foreach>
+	</insert>
+	<delete id="delteContentList" >
+		delete from content where taskidpro =
+
+			#{taskid}
+
+	</delete>
+</mapper>

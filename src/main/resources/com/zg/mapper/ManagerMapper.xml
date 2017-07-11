@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.lanqiao.o2oclass.mapper.ManagerMapper">
+	<select id="login" resultType="org.lanqiao.o2oclass.domain.Manager" parameterType="hashmap">
+	select id,name,pwd,email from admin where name=#{name} and pwd=#{pwd}
+	</select>
+	<update id="updateEmail" parameterType="hashmap">
+	update admin set email=#{email} where id=#{id}
+	</update>
+	<update id="updatePwd" parameterType="hashmap">
+	update admin set pwd=#{pwd} where id=#{id}
+	</update>
+	<select id="selectEmail" resultType="org.lanqiao.o2oclass.domain.Manager" parameterType="hashmap">
+	select id,name,pwd,email from admin where id=#{id}
+	</select>
+</mapper>

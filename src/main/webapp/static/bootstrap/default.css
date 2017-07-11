@@ -1,0 +1,123 @@
+#mycarousel {
+	margin: 50px 0 0 0;
+}
+.carousel-inner img {
+	margin: 0 auto;
+}
+.row-1{
+	margin: 20px auto;
+}
+.row-1 h1{
+	text-align: center;
+	font-family: "微软雅黑";
+	font-size: 26px;
+	color:#2B669A;
+	letter-spacing: 1px;
+	margin-bottom: 15px;
+}
+.row-1 p{
+	text-align: center;
+	font-family: "微软雅黑";
+	color:#999;
+	font-size: 16px;
+	letter-spacing: 1px;
+}
+.thumbnail p{
+	color:black;
+	font-size: 13px;
+	text-align: left;
+}
+.thumbnail h3{
+	font-size: 16px;
+	color:#2E6DA4;
+	font-family: "微软雅黑";
+	text-align: left;
+}
+.thumbnail img{width:100%;height: 100%;}
+.height{height: 200px;}
+/*----------------------------------------------*/
+.jumbotron{
+	margin: 0;
+	margin-top: 50px;
+	background-color: #35dad4;
+	color:white;
+	/*font-family: "微软雅黑";*/
+}
+.jumbotron h1{
+	font-size: 24px;
+}
+.jumbotron h4{
+	font-size: 13px
+	padding-left: 20px;
+}
+@media(min-width:768px ) {
+	.jumbotron h1{
+		font-size: 30px;
+	}
+	.jumbotron h4{
+		font-size: 17px;
+		padding-left: 30px;
+	}
+}
+@media(min-width:992px ) {
+	.jumbotron h1{
+		font-size: 33px;
+	}
+	.jumbotron h4{
+		font-size: 18px;
+		padding-left: 40px;
+	}
+	.row-new-style h4{
+		font-size: 18px;
+	}
+}
+@media(min-width:1200px ) {
+	.jumbotron h1{
+		font-size: 36px;
+	}
+	.jumbotron h4{
+		font-size: 20px;
+		padding-left: 50px;
+	}
+	.row-new-style h4{
+		font-size: 20px;
+	}
+}
+.info{
+	background-color: #EEEEEE;
+	padding: 30px 0;
+}
+.row-new-style{
+	background-color: white;
+	margin-bottom: 10px;
+	box-shadow: 2px 2px 3px #CCCCCC;
+}
+.row-new-style img{
+	margin: 10px 0px 10px -5px;
+}
+.row-new-style h4{
+	font-size: 16px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	font-weight:500;
+}
+.row-new-style p{
+	color:#777;
+	line-height: 1.5;
+}
+.new-right{
+	background-color: white;
+	box-shadow: 2px 2px 3px #CCCCCC;
+}
+.new-right a{color:#333333; text-decoration: none;line-height: 22px;}
+.new-right a:hover{color:orange; }
+blockquote{
+	margin: 0 ;
+	padding: 0;
+}
+blockquote h2{
+	font-size: 20px;
+	color: #333;
+	padding: 5px;
+}

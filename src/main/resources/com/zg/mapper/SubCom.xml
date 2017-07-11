@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.lanqiao.o2oclass.mapper.SubCommentsMapper">
+	<resultMap id="selectComMap" type="org.lanqiao.o2oclass.domain.Comments">
+		<id property="id" column="id"/>
+	  	<result property="commentText" column="commentText"/>
+	  	<result property="releaseDate" column="releaseDate"/>
+	  	<association property="emp" javaType="org.lanqiao.o2oclass.domain.Student">
+			<result property="name" column="name"/>
+		</association>
+	</resultMap>
+	
+	
+	<insert id="insertSubCom" >
+		<![CDATA[
+			
+			insert into subcomments values(#{id},#{subcommentText},#{emp_subcomments_id},#{comments_subcomments_id},#{releaseDate});
+		]]>
+			
+	</insert>
+	
+	<select id="selectCount" resultType="int">
+		<![CDATA[
+			select max(id) from subcomments
+			
+		]]>
+	</select>
+	<insert id="insertPostDel">
+		<![CDATA[
+			insert into postsdel(title) value(#{id})
+			
+		]]>
+	</insert>
+</mapper>
+

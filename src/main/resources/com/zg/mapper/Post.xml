@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jgs.entity">
+	<resultMap id="postDetail" type="org.lanqiao.o2oclass.domain.Post">
+		<id property="id" column="pid"/>
+		<result property="title" column="title"/>
+		<result property="postText" column="postText"/>
+		<result property="releaseDate" column="pDate"/>
+		<result property="goodCount" column="goodCount"/>
+		<association property="author" javaType="org.lanqiao.o2oclass.domain.Student">
+			<result property="name" column="pauthor"/>
+			<result property="imageUrl" column="pImg"/>
+		</association>
+	  <collection property="comments" ofType="org.lanqiao.o2oclass.domain.Comments">
+	  	<id property="id" column="cid"/>
+	  	<result property="commentText" column="commentText"/>
+	  	<result property="releaseDate" column="releaseDate"/>
+	  	<association property="emp" javaType="org.lanqiao.o2oclass.domain.Student">
+			<result property="name" column="name"/>
+			<result property="imageUrl" column="comImg"/>
+		</association>
+		<collection property="subComments" ofType="org.lanqiao.o2oclass.domain.SubComment">
+	  	<id property="id" column="sid"/>
+	  	<result property="subcommentText" column="subcommentText"/>
+	  	<result property="releaseDate" column="subcomDate"/>
+	  	<association property="emp" javaType="org.lanqiao.o2oclass.domain.Student">
+			<result property="name" column="sename"/>
+		</association>
+	  </collection>
+	  </collection>
+	</resultMap>
+	
+	
+	
+	<resultMap id="postMapBase" type="org.lanqiao.o2oclass.domain.Post">
+		<id property="id" column="id"/>
+		<result property="title" column="title"/>
+		<result property="resCount" column="resCount"/>
+		<result property="postText" column="postText"/>
+		<result property="releaseDate" column="releaseDate"/>
+		<association property="author" javaType="org.lanqiao.o2oclass.domain.Student">
+			<result property="name" column="name"/>
+		</association>
+	</resultMap>
+	
+	
+	
+	
+	<select id="selectPost" resultMap="postMapBase">
+		<![CDATA[
+			SELECT postText, p.id,p.title,e.name,p.releaseDate,resCount FROM posts p,student e WHERE p.author=e.id
+			
+		]]>
+			
+	</select>
+	
+	<select id="selectPostById" resultMap="postDetail">
+		<![CDATA[
+			SELECT tabTemp2.*,student.name sename FROM
+			(SELECT tabTemp.*,s.subcommentText,s.releaseDate subcomDate,s.id sid,s.emp_subcomments_id seid FROM 
+			(SELECT post3.*,student.name,student.imageUrl comImg FROM
+			(SELECT post2.*,e.name pauthor,e.imageUrl pImg FROM
+			(SELECT p.goodCount, p.id pid,c.id cid,p.author,title,commentText,c.releaseDate,p.postText,c.emp_comments_id,p.releaseDate pDate FROM posts p LEFT JOIN comments c ON p.id=c.posts_comments_id) 
+			post2,student e WHERE post2.pid=#{id} AND post2.author=e.id)
+			post3 LEFT JOIN student ON post3.emp_comments_id=student.id)
+			tabTemp LEFT JOIN subcomments s ON tabTemp.cid=s.comments_subcomments_id) 
+			tabTemp2 LEFT JOIN student ON tabTemp2.seid=student.id
+		]]>
+			
+	</select>
+	
+	
+	<select id="selectSubById" resultType="Map">
+		<![CDATA[
+			SELECT s.subcommentText,s.releaseDate,e.name FROM subcomments s,student e WHERE s.emp_subcomments_id=e.id AND s.comments_subcomments_id=#{id}
+			
+		]]>
+			
+	</select>
+	
+	<insert id="insertPost" >
+		<![CDATA[
+			INSERT INTO posts(title,author,releaseDate,postText) VALUES(#{title},#{author},#{releaseDate},#{postText})
+		]]>
+	
+	</insert>
+	
+	<select id="selectResCount" resultType="int">
+		<![CDATA[
+			SELECT rescount FROM posts WHERE posts.id=#{id}
+		]]>
+	</select>
+	
+	<insert id="updateCount">
+		<![CDATA[
+			update  posts set rescount=#{resCount} where id=#{id};
+		]]>
+	</insert>
+	
+	<delete id="delPostById">
+		<![CDATA[
+			delete from posts where id=#{id}
+		]]>
+	</delete>
+	
+	<select id="selectGoodCount" resultType="int">
+		<![CDATA[
+			select goodcount from posts where id=#{id}
+		]]>
+	</select>
+	
+	<update id="updateGoodCount">
+		<![CDATA[
+			update posts set goodcount=#{count} where id=#{id}
+		]]>
+	</update>
+	
+	<insert id="insertPostDel">
+		<![CDATA[
+			INSERT INTO postsdel SELECT * FROM posts WHERE id=#{id}
+			]]>
+	</insert>
+</mapper>
+
