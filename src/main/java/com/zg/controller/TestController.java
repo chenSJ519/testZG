@@ -54,7 +54,7 @@ public class TestController {
     @Autowired
     private MySpringConfig mySpringConfig;//
     @Autowired
-    private ZgService zs;
+    private ZgService zs;//
     @Autowired
     private ProgramMapper pm;
     @RequestMapping("/index")
